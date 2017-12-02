@@ -55,6 +55,12 @@
       <version>7.0.3</version>
     </dependency>
     -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
 <!-- vim: set ts=2 sw=2 et syn=xml: -->
