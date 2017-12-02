@@ -1,0 +1,11 @@
+# .gitignore
+
+*.jar
+*.class
+.*.sw*
+.idea
+*.iml
+target
+tags
+
+# vim: set syn=config:
