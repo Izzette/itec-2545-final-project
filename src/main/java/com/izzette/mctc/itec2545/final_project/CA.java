@@ -20,8 +20,11 @@ class CA {
 
 	void stepOnce(int[] out) {
 		int nextCellsIndex = getNextCellsIndex();
-		for (int i = 0; cellArrays[cellsIndex].length > i; ++i)
-			cellArrays[nextCellsIndex][i] = rule.applyRule(i, cellArrays[cellsIndex]);
+		for (int i = 0; cellArrays[cellsIndex].length > i; ++i) {
+			int nextCellState = rule.applyRule(i, cellArrays[cellsIndex]);
+			out[i] = nextCellState;
+			cellArrays[nextCellsIndex][i] = nextCellState;
+		}
 
 		cellsIndex = nextCellsIndex;
 	}
