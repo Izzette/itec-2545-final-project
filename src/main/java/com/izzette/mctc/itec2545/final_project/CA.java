@@ -4,6 +4,7 @@ import com.izzette.mctc.itec2545.final_project.CARule;
 
 class CA {
 	final CARule rule;
+	final int size;
 
 	private final int[][] cellArrays;
 	private int cellsIndex = 0;
@@ -12,8 +13,9 @@ class CA {
 		if (initialCells.length < rule.neighbourhoodSize)
 			throw new IllegalArgumentException();
 
-		this.cellArrays = new int[2][initialCells.length];
-		for (int i = 0; initialCells.length > i; ++i)
+		this.size = initialCells.length;
+		this.cellArrays = new int[2][this.size];
+		for (int i = 0; this.size > i; ++i)
 			this.cellArrays[cellsIndex][i] = initialCells[i];
 		this.rule = rule;
 	}
