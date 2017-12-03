@@ -45,7 +45,8 @@ class CARule {
 	}
 
 	private int wrapIndex(int index, int[] cells) {
-		return index % cells.length;
+		// Java doesn't handle modulus on negative numbers "as expected".
+		return (cells.length + index) % cells.length;
 	}
 }
 
