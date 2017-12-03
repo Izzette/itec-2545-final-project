@@ -6,9 +6,9 @@ class CARule {
 	final int colors;
 	final int[] ruleArray;
 
-	private static int getRuleSize(int neighbourhoodDistance, int colors) {
+	private static int getRuleSize(int neighbourhoodSize, int colors) {
 		int ruleSize = 1;
-		for (int i = 0; neighbourhoodDistance > i; ++i)
+		for (int i = 0; neighbourhoodSize > i; ++i)
 			ruleSize *= colors;
 
 		return ruleSize;
@@ -19,7 +19,7 @@ class CARule {
 		this.neighbourhoodSize = neighbourhoodDistance * 2 + 1;
 		this.colors = colors;
 
-		this.ruleArray = new int[getRuleSize(neighbourhoodDistance, colors)];
+		this.ruleArray = new int[getRuleSize(this.neighbourhoodSize, colors)];
 		for (int i = 0; this.ruleArray.length > i; ++i) {
 			this.ruleArray[i] = (int)(ruleNumber % colors);
 			ruleNumber /= colors;
