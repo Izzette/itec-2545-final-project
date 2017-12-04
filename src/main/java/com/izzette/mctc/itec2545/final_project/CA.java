@@ -11,7 +11,8 @@ class CA {
 
 	CA(int[] initialCells, CARule rule) {
 		if (initialCells.length < rule.neighbourhoodSize)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(
+					"Size must be at least the neighbourhood size.");
 
 		this.size = initialCells.length;
 		this.cellArrays = new int[2][this.size];
