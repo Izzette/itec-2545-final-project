@@ -1,11 +1,13 @@
 package com.izzette.mctc.itec2545.final_project;
 
+import java.math.BigInteger;
+import java.util.Arrays;
+
+import junit.framework.TestCase;
+import org.junit.Test;
+
 import com.izzette.mctc.itec2545.final_project.CA;
 import com.izzette.mctc.itec2545.final_project.CARule;
-
-import java.util.Arrays;
-import org.junit.Test;
-import junit.framework.TestCase;
 
 public class CATest {
 	private static final int[] singleCellInitial = new int[101];
@@ -20,7 +22,7 @@ public class CATest {
 	public void testNearestNeighbourTwoColor() {
 		int[] out = new int[singleCellInitial.length];
 
-		CARule rule30 = new CARule(1, 2, 30L);
+		CARule rule30 = new CARule(1, 2, new BigInteger("30"));
 		CA rule30CA = new CA(singleCellInitial, rule30);
 
 		System.out.println("k=2, r=1 rule 30");
@@ -34,7 +36,7 @@ public class CATest {
 		TestCase.assertEquals("Rule 30 (200 step hash)",
 				1455750616, Arrays.hashCode(out));
 
-		CARule rule110 = new CARule(1, 2, 110L);
+		CARule rule110 = new CARule(1, 2, new BigInteger("110"));
 		CA rule110CA = new CA(singleCellInitial, rule110);
 
 		System.out.println("k=2, r=1 rule 110");
@@ -53,7 +55,7 @@ public class CATest {
 	public void testNearestNeighbourThreeColor() {
 		int[] out = new int[singleCellInitial.length];
 
-		CARule code2040 = new CARule(1, 3, 7284586781490L);
+		CARule code2040 = new CARule(1, 3, new BigInteger("7284586781490"));
 		CA code2040CA = new CA(singleCellTwoInitial, code2040);
 
 		System.out.println("k=3, r=1 totalistic code 2040");
@@ -72,7 +74,7 @@ public class CATest {
 	public void testNextNearestNeighbourTwoColor() {
 		int[] out = new int[singleCellInitial.length];
 
-		CARule rule1436965290 = new CARule(2, 2, 1436965290L);
+		CARule rule1436965290 = new CARule(2, 2, new BigInteger("1436965290"));
 		CA rule1436965290CA = new CA(singleCellInitial, rule1436965290);
 
 		System.out.println("k=2, r=2 rule 1436965290");

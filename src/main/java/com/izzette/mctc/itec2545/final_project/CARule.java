@@ -1,5 +1,7 @@
 package com.izzette.mctc.itec2545.final_project;
 
+import java.math.BigInteger;
+
 class CARule {
 	final int neighbourhoodDistance;
 	final int neighbourhoodSize;
@@ -14,15 +16,17 @@ class CARule {
 		return ruleSize;
 	}
 
-	CARule(int neighbourhoodDistance, int colors, long ruleNumber) {
+	CARule(int neighbourhoodDistance, int colors, BigInteger ruleNumber) {
 		this.neighbourhoodDistance = neighbourhoodDistance;
 		this.neighbourhoodSize = neighbourhoodDistance * 2 + 1;
 		this.colors = colors;
 
 		this.ruleArray = new int[getRuleSize(this.neighbourhoodSize, colors)];
+		BigInteger colorsBig = BigInteger.valueOf(colors);
 		for (int i = 0; this.ruleArray.length > i; ++i) {
-			this.ruleArray[i] = (int)(ruleNumber % colors);
-			ruleNumber /= colors;
+			BigInteger[] results = ruleNumber.divideAndRemainder(colorsBig);
+			ruleNumber = results[0];
+			this.ruleArray[i] = results[1].intValue();
 		}
 	}
 
