@@ -8,6 +8,7 @@ import com.izzette.mctc.itec2545.final_project.CA;
 import com.izzette.mctc.itec2545.final_project.CARule;
 import javax.swing.*;
 
+/** Form for creating and viewing a cellular automata. */
 public class CACreatorForm extends JFrame {
 	private static final long serialVersionUID = 1;
 
@@ -20,6 +21,7 @@ public class CACreatorForm extends JFrame {
 	private JButton runButton;
 	private JScrollPane caScollPane;
 
+	/** Create and display the form. */
 	CACreatorForm() {
 		setContentPane(mainPanel);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -28,10 +30,6 @@ public class CACreatorForm extends JFrame {
 
 		pack();
 		setVisible(true);
-	}
-
-	CACreatorForm() {
-		this(null);
 	}
 
 	private void setupUIComponenets() {
@@ -134,10 +132,18 @@ public class CACreatorForm extends JFrame {
 	}
 
 	// TODO: implement serializable.
+	/** Cellular automata rule parameters structure. */
 	public static class CAParams {
+		/** The number of colors (k), and neighbourhood radius (r). */
 		public final int k, r;
+		/** The rule number (rule). */
 		public final BigInteger ruleNumber;
 
+		/** Create a new set of cellular automata rule parameters.
+		 * @param k The number of colors (k).
+		 * @param r The neighbourhood radius (r).
+		 * @param ruleNumber The rule number (rule).
+		 */
 		public CAParams(int k, int r, BigInteger ruleNumber) {
 			this.k = k;
 			this.r = r;
