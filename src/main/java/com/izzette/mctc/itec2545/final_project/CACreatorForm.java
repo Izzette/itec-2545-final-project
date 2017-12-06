@@ -20,11 +20,7 @@ public class CACreatorForm extends JFrame {
 	private JButton runButton;
 	private JScrollPane caScollPane;
 
-	private CARule rule;
-
-	CACreatorForm(CARule rule) {
-		this.rule = rule;
-
+	CACreatorForm() {
 		setContentPane(mainPanel);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -138,7 +134,7 @@ public class CACreatorForm extends JFrame {
 	}
 
 	// TODO: implement serializable.
-	private static class CAParams {
+	public static class CAParams {
 		public final int k, r;
 		public final BigInteger ruleNumber;
 
@@ -167,6 +163,7 @@ public class CACreatorForm extends JFrame {
 			if (null == (params = getParams()) || null == (runConfig = getRunConfig()))
 				return;
 
+			CARule rule;
 			try {
 				rule = new CARule(params.r, params.k, params.ruleNumber);
 			} catch (IllegalArgumentException e) {
