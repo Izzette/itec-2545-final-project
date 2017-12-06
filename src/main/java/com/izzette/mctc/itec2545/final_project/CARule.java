@@ -2,27 +2,25 @@ package com.izzette.mctc.itec2545.final_project;
 
 import java.math.BigInteger;
 
+/** Cellular automata rule (k, r, and rule). */
 class CARule {
+	/** The neighbourhood radius (r). */
 	final int radius;
+	/** The neighbourhood size (2r + 1). */
 	final int neighbourhoodSize;
+	/** The number of colors cells can have (k). */
 	final int colors;
+	/** THe rule number (rule). */
 	final BigInteger ruleNumber;
 
 	private final int[] ruleArray;
 
-	private static int getRuleSize(int neighbourhoodSize, int colors) {
-		int ruleSize = 1;
-		for (int i = 0; neighbourhoodSize > i; ++i) {
-			if (colors > Integer.MAX_VALUE / ruleSize)
-				throw new IllegalArgumentException(
-						"Rule space is larger than the maximum integer.");
-
-			ruleSize *= colors;
-		}
-
-		return ruleSize;
-	}
-
+	/** Create a new cellular automata rule.
+	 * @param radius The neighbourhood radius (r).
+	 * @param colors The number of colors cells can have (k).
+	 * @param ruleNumber The rule number (rule).
+	 * @throws IllegalArgumentException If the rule is invalid or too large.
+	 */
 	CARule(int radius, int colors, BigInteger ruleNumber) {
 		if (1 > radius)
 		   throw new IllegalArgumentException(
@@ -61,9 +59,27 @@ class CARule {
 			throw new IllegalArgumentException("Rule number larger than rule space.");
 	}
 
+	/** Obtain the next state for the cell at the specified index.
+	 * @param index The cells index.
+	 * @param cells The cells current state.
+	 * @return The new state for the cell.
+	 */
 	int applyRule(int index, int[] cells) {
 		int neighbourhood = computeNeighbourhood(index, cells);
 		return ruleArray[neighbourhood];
+	}
+
+	private static int getRuleSize(int neighbourhoodSize, int colors) {
+		int ruleSize = 1;
+		for (int i = 0; neighbourhoodSize > i; ++i) {
+			if (colors > Integer.MAX_VALUE / ruleSize)
+				throw new IllegalArgumentException(
+						"Rule space is larger than the maximum integer.");
+
+			ruleSize *= colors;
+		}
+
+		return ruleSize;
 	}
 
 	private int computeNeighbourhood(int index, int[] cells) {
