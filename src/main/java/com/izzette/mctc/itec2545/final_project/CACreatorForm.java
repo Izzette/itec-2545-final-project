@@ -1,12 +1,17 @@
 package com.izzette.mctc.itec2545.final_project;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
+import javax.swing.*;
 
 import com.izzette.mctc.itec2545.final_project.CA;
+import com.izzette.mctc.itec2545.final_project.CARender;
 import com.izzette.mctc.itec2545.final_project.CARule;
-import javax.swing.*;
 
 /** Form for creating and viewing a cellular automata. */
 public class CACreatorForm extends JFrame {
@@ -20,10 +25,15 @@ public class CACreatorForm extends JFrame {
 	private JTextField ruleTextField;
 	private JButton runButton;
 	private JScrollPane caScollPane;
+	private JPanel caPanel;
+
+	private CARender caRender = null;
 
 	/** Create and display the form. */
 	CACreatorForm() {
-		setContentPane(mainPanel);
+		this.caPanel = new CAPanel();
+
+		setContentPane(this.mainPanel);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		setupUIComponenets();
@@ -161,6 +171,11 @@ public class CACreatorForm extends JFrame {
 	}
 
 	private class RunButtonActionListener implements ActionListener {
+		@Deprecated
+		private final Color[] colorMap = {
+			Color.WHITE, Color.LIGHT_GRAY, Color.GRAY, Color.DARK_GRAY, Color.BLACK
+		};
+
 		@Override
 		public void actionPerformed(ActionEvent ev) {
 			CAParams params;
@@ -189,40 +204,76 @@ public class CACreatorForm extends JFrame {
 				return;
 			}
 
-			// TODO: Draw to scroll pane.
+			caRender = new CARender(ca.size, runConfig.iterations + 1, colorMap);
+
 			int[] out = new int[ca.size];
-			displayRow(initialCells);
-			for (int i = 0; runConfig.iterations > i; ++i) {
+			caRender.drawRow(initialCells, 0);
+			for (int i = 1; runConfig.iterations >= i; ++i) {
 				ca.stepOnce(out);
-				displayRow(out);
+				caRender.drawRow(out, i);
 			}
+
+			caScollPane.setViewportView(caPanel);
+		}
+	}
+
+	private class CAPanel extends JPanel implements Scrollable {
+		private static final long serialVersionUID = 1;
+
+		@Override
+		public void paint(Graphics graphics) {
+			if (null != caRender)
+				caRender.drawOnto(graphics, 0, 0);
 		}
 
-		@Deprecated
-		private void displayRow(int[] cells) {
-			for (int cell : cells) {
-				char c;
-				switch (cell) {
-					case 0:
-						c = ' ';
-						break;
-					case 1:
-						c = '*';
-						break;
-					case 2:
-						c = '%';
-						break;
-					case 3:
-						c = '#';
-						break;
-					default:
-						c = '@';
-				}
+		@Override
+		public Dimension getPreferredSize() {
+			return new Dimension(caRender.size, caRender.numberOfRows);
+		}
 
-				System.out.print(c);
+		@Override
+		public Dimension getPreferredScrollableViewportSize() {
+			return getPreferredSize();
+		}
+
+		@Override
+		public int getScrollableBlockIncrement(
+				Rectangle visibleRect, int orientation, int direction) {
+			return 1;
+		}
+
+		@Override
+		public int getScrollableUnitIncrement(
+				Rectangle visibleRect, int orientation, int direction) {
+			int position, visibleLength, length;
+			if (SwingConstants.VERTICAL == orientation) {
+				position = visibleRect.y;
+				visibleLength = visibleRect.height;
+				length = getPreferredScrollableViewportSize().height;
+			} else {
+				position = visibleRect.x;
+				visibleLength = visibleRect.width;
+				length = getPreferredScrollableViewportSize().width;
 			}
 
-			System.out.println();
+			int remaining;
+			if (direction > 0)
+				remaining = length - (position + visibleLength);
+			else
+				remaining = position;
+
+			return (remaining < visibleLength ? remaining : visibleLength);
+		}
+
+
+		@Override
+		public boolean getScrollableTracksViewportWidth() {
+			return false;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportHeight() {
+			return false;
 		}
 	}
 }
