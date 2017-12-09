@@ -6,12 +6,11 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.math.BigInteger;
-import javax.swing.*;
 
-import com.izzette.mctc.itec2545.final_project.CA;
-import com.izzette.mctc.itec2545.final_project.CARender;
-import com.izzette.mctc.itec2545.final_project.CARule;
+import javax.swing.*;
 
 /** Form for creating and viewing a cellular automata. */
 public class CACreatorForm extends JFrame {
@@ -24,10 +23,13 @@ public class CACreatorForm extends JFrame {
 	private JTextField iterationsTextField;
 	private JTextField ruleTextField;
 	private JButton runButton;
+	private JButton selectColorsButton;
 	private JScrollPane caScollPane;
 	private JPanel caPanel;
 
 	private CARender caRender = null;
+
+	private Color[] colorPallet = { Color.WHITE };
 
 	/** Create and display the form. */
 	CACreatorForm() {
@@ -44,6 +46,7 @@ public class CACreatorForm extends JFrame {
 
 	private void setupUIComponenets() {
 		runButton.addActionListener(new RunButtonActionListener());
+		selectColorsButton.addActionListener(new SelectColorsButtonActionListener());
 	}
 
 	private BigInteger getBigIntInput(
@@ -171,11 +174,6 @@ public class CACreatorForm extends JFrame {
 	}
 
 	private class RunButtonActionListener implements ActionListener {
-		@Deprecated
-		private final Color[] colorMap = {
-			Color.WHITE, Color.LIGHT_GRAY, Color.GRAY, Color.DARK_GRAY, Color.BLACK
-		};
-
 		@Override
 		public void actionPerformed(ActionEvent ev) {
 			CAParams params;
@@ -204,7 +202,8 @@ public class CACreatorForm extends JFrame {
 				return;
 			}
 
-			caRender = new CARender(ca.size, runConfig.iterations + 1, colorMap);
+			colorPallet = CAColorPalletForm.ensureColorPallet(params.k, colorPallet);
+			caRender = new CARender(ca.size, runConfig.iterations + 1, colorPallet);
 
 			int[] out = new int[ca.size];
 			caRender.drawRow(initialCells, 0);
@@ -214,6 +213,33 @@ public class CACreatorForm extends JFrame {
 			}
 
 			caScollPane.setViewportView(caPanel);
+		}
+	}
+
+	private class SelectColorsButtonActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent ev) {
+			String errorTitle = "Invalid Number of Colors";
+			String[] error = new String[1];
+
+			Integer k;
+			if (null == (k = getKInput(error))) {
+				displayErrorMessage(errorTitle, error[0]);
+				return;
+			}
+
+			if (0 >= k) {
+				displayErrorMessage(
+						errorTitle, "k must be greater than zero");
+				return;
+			}
+
+			colorPallet = CAColorPalletForm.ensureColorPallet(k, colorPallet);
+			CAColorPalletForm colorPalletForm = new CAColorPalletForm (
+					CACreatorForm.this, colorPallet);
+
+			if (colorPalletForm.areChangesAccepted())
+				colorPallet = colorPalletForm.getColors();
 		}
 	}
 
