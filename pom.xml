@@ -6,6 +6,10 @@
   <groupId>com.izzette.mctc.itec2545.final_project</groupId>
   <artifactId>interactive-1d-ca</artifactId>
   <version>0.1.0</version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
   <build>
     <plugins>
       <plugin>
