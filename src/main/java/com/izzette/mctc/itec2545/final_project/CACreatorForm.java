@@ -9,7 +9,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.math.BigInteger;
+import java.sql.SQLException;
 
+import com.izzette.mctc.itec2545.final_project.CA;
+import com.izzette.mctc.itec2545.final_project.CAColorPalletForm;
+import com.izzette.mctc.itec2545.final_project.CARender;
+import com.izzette.mctc.itec2545.final_project.CARule;
+import com.izzette.mctc.itec2545.final_project.CARuleData;
+import com.izzette.mctc.itec2545.final_project.CARuleManagerForm;
 import javax.swing.*;
 
 /** Form for creating and viewing a cellular automata. */
@@ -25,6 +32,8 @@ public class CACreatorForm extends JFrame {
 	private JButton runButton;
 	private JButton selectColorsButton;
 	private JScrollPane caScollPane;
+	private JButton manageRulesButton;
+	private JButton saveRuleButton;
 	private JPanel caPanel;
 
 	private CARender caRender = null;
@@ -45,6 +54,8 @@ public class CACreatorForm extends JFrame {
 	}
 
 	private void setupUIComponenets() {
+		saveRuleButton.addActionListener(new SaveRuleButtonActionListener());
+		manageRulesButton.addActionListener(new ManageRulesButtonActionListener());
 		runButton.addActionListener(new RunButtonActionListener());
 		selectColorsButton.addActionListener(new SelectColorsButtonActionListener());
 	}
@@ -97,6 +108,13 @@ public class CACreatorForm extends JFrame {
 		return getIntInput(iterationsTextField, "Number of Iterations", error);
 	}
 
+	private void setRuleParams(CARuleData.RuleParams ruleParams) {
+		kTextField.setText(Integer.toString(ruleParams.k));
+		rTextField.setText(Integer.toString(ruleParams.r));
+		ruleTextField.setText(ruleParams.rule);
+		// TODO: comment field.
+	}
+
 	private void displayErrorMessage(String title, String message) {
 		JOptionPane.showMessageDialog(
 				this, message, title, JOptionPane.ERROR_MESSAGE);
@@ -144,19 +162,10 @@ public class CACreatorForm extends JFrame {
 		return new CARunConfig(cellsWidth, iterations);
 	}
 
-	// TODO: implement serializable.
-	/** Cellular automata rule parameters structure. */
-	public static class CAParams {
-		/** The number of colors (k), and neighbourhood radius (r). */
+	private static class CAParams {
 		public final int k, r;
-		/** The rule number (rule). */
 		public final BigInteger ruleNumber;
 
-		/** Create a new set of cellular automata rule parameters.
-		 * @param k The number of colors (k).
-		 * @param r The neighbourhood radius (r).
-		 * @param ruleNumber The rule number (rule).
-		 */
 		public CAParams(int k, int r, BigInteger ruleNumber) {
 			this.k = k;
 			this.r = r;
@@ -170,6 +179,39 @@ public class CACreatorForm extends JFrame {
 		public CARunConfig(int cellsWidth, int iterations) {
 			this.cellsWidth = cellsWidth;
 			this.iterations = iterations;
+		}
+	}
+
+	private class SaveRuleButtonActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent ev) {
+			CAParams params;
+
+			if (null == (params = getParams()))
+				return;
+
+			CARuleData.RuleParams ruleParams = new CARuleData.RuleParams(
+					params.r, params.k, params.ruleNumber.toString(), "");
+
+			try {
+				CARuleData.getInstance().storeRule(ruleParams);
+			} catch (SQLException e) {
+				System.err.printf("Failed to save a rule: %s\n", e.getMessage());
+				e.printStackTrace();
+				System.exit(1);
+				return;
+			}
+		}
+	}
+
+	private class ManageRulesButtonActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent ev) {
+			CARuleManagerForm ruleManagerForm =
+				new CARuleManagerForm(CACreatorForm.this);
+
+			if (ruleManagerForm.wasLoadSelected())
+				setRuleParams(ruleManagerForm.getRuleParamsToLoad());
 		}
 	}
 
