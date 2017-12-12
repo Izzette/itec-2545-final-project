@@ -10,6 +10,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 import com.izzette.mctc.itec2545.final_project.CA;
 import com.izzette.mctc.itec2545.final_project.CAColorPalletForm;
@@ -34,6 +36,8 @@ public class CACreatorForm extends JFrame {
 	private JScrollPane caScollPane;
 	private JButton manageRulesButton;
 	private JButton saveRuleButton;
+	private JRadioButton simpleRadioButton;
+	private JRadioButton randomRadioButton;
 	private JPanel caPanel;
 
 	private CARender caRender = null;
@@ -232,9 +236,15 @@ public class CACreatorForm extends JFrame {
 				return;
 			}
 
-			int[] initialCells = new int[runConfig.cellsWidth];
-			// TODO: allow selection of initial state.
-			initialCells[runConfig.cellsWidth / 2] = 1;
+			int[] initialCells;
+			if (simpleRadioButton.isSelected()) {
+				initialCells = new int[runConfig.cellsWidth];
+				initialCells[runConfig.cellsWidth / 2] = 1;
+			} else {
+				Random random = new Random();
+				IntStream ints = random.ints(runConfig.cellsWidth, 0, params.k);
+				initialCells = ints.toArray();
+			}
 
 			CA ca;
 			try {
