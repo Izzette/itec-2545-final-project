@@ -3,6 +3,7 @@ package com.izzette.mctc.itec2545.final_project;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,8 @@ import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.stream.IntStream;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.izzette.mctc.itec2545.final_project.CA;
 import com.izzette.mctc.itec2545.final_project.CAColorPalletForm;
@@ -38,6 +41,7 @@ public class CACreatorForm extends JFrame {
 	private JButton saveRuleButton;
 	private JRadioButton simpleRadioButton;
 	private JRadioButton randomRadioButton;
+	private JSlider zoomSlider;
 	private JPanel caPanel;
 
 	private CARender caRender = null;
@@ -62,6 +66,7 @@ public class CACreatorForm extends JFrame {
 		manageRulesButton.addActionListener(new ManageRulesButtonActionListener());
 		runButton.addActionListener(new RunButtonActionListener());
 		selectColorsButton.addActionListener(new SelectColorsButtonActionListener());
+		zoomSlider.addChangeListener(new ZoomSliderChangeListener());
 	}
 
 	private BigInteger getBigIntInput(
@@ -295,18 +300,30 @@ public class CACreatorForm extends JFrame {
 		}
 	}
 
+	private class ZoomSliderChangeListener implements ChangeListener {
+		@Override
+		public void stateChanged(ChangeEvent ev) {
+			caScollPane.setViewportView(caPanel);
+		}
+	}
+
 	private class CAPanel extends JPanel implements Scrollable {
 		private static final long serialVersionUID = 1;
 
 		@Override
 		public void paint(Graphics graphics) {
-			if (null != caRender)
-				caRender.drawOnto(graphics, 0, 0);
+			if (null == caRender)
+				return;
+
+			int scale = zoomSlider.getValue();
+			((Graphics2D)graphics).scale(scale, scale);
+			caRender.drawOnto(graphics, 0, 0);
 		}
 
 		@Override
 		public Dimension getPreferredSize() {
-			return new Dimension(caRender.size, caRender.numberOfRows);
+			int scale = zoomSlider.getValue();
+			return new Dimension(scale * caRender.size, scale * caRender.numberOfRows);
 		}
 
 		@Override
